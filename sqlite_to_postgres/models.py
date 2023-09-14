@@ -1,48 +1,48 @@
-from uuid import uuid4
 from dataclasses import dataclass
+from datetime import datetime
 
 
 @dataclass
 class FilmWork:
-    id: uuid4
+    id: str
     title: str
     description: str
-    creation_date: str
+    creation_date: datetime
     rating: float
     type: str
-    created_at: str
-    updated_at: str
+    created_at: datetime
+    updated_at: datetime
 
 
 @dataclass
 class Genre:
-    id: uuid4
+    id: str
     name: str
     description: str
-    created_at: str
-    updated_at: str
+    created_at: datetime
+    updated_at: datetime
 
 
 @dataclass
 class Person:
-    id: uuid4
+    id: str
     full_name: str
-    created_at: str
-    updated_at: str
+    created_at: datetime
+    updated_at: datetime
 
 
 @dataclass
 class GenreFilmWork:
-    id: uuid4
+    id: str
     film_work_id: str
     genre_id: str
-    created_at: str
+    created_at: datetime
 
 
 @dataclass
 class PersonFilmWork:
-    id: uuid4
+    id: str
     film_work_id: str
     person_id: str
     role: str
-    created_at: str
+    created_at: datetime
