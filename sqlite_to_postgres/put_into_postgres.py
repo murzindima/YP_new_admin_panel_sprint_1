@@ -1,8 +1,11 @@
+import logging
 from contextlib import contextmanager
 from dataclasses import fields
 from typing import Type, List
 
 import psycopg2
+
+logger = logging.getLogger(__name__)
 
 
 @contextmanager
@@ -56,17 +59,22 @@ def insert_into_postgres(
     columns = [f.name for f in fields(table_model)]
     placeholders = ", ".join(["%s"] * len(columns))
 
+    mogrified_values = [
+        cursor.mogrify(f"({placeholders})", record).decode("utf-8")
+        for record in records
+    ]
+    all_values = ", ".join(mogrified_values)
+
     insert_query = f"""
     INSERT INTO {schema}.{table_name} ({','.join(columns)})
-    VALUES ({placeholders})
+    VALUES {all_values}
     ON CONFLICT (id) DO NOTHING;
     """
 
     try:
-        for record in records:
-            cursor.execute(insert_query, record)
+        cursor.execute(insert_query)
         conn.commit()
 
     except psycopg2.Error as e:
-        print(f"Error inserting record into PostgreSQL: {e}")
+        logger.exception(f"Error inserting record into PostgreSQL: {e}")
         conn.rollback()
