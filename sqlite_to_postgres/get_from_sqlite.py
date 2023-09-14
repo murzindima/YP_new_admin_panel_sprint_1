@@ -7,6 +7,22 @@ EXCLUDED_COLUMN = "file_path"
 
 @contextmanager
 def sqlite_conn_context(db_path: str):
+    """
+    Context manager for managing SQLite database connections.
+
+    This context manager provides a connection to the SQLite database and ensures
+    the connection is properly closed after usage.
+
+    Parameters:
+    - db_path (str): Path to the SQLite database file.
+
+    Yields:
+    - sqlite3.Connection: SQLite database connection object.
+
+    Example:
+    with sqlite_conn_context('path/to/db.sqlite3') as conn:
+        # Perform database operations using conn
+    """
     conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
     try:
@@ -16,6 +32,19 @@ def sqlite_conn_context(db_path: str):
 
 
 def fetch_sqlite_columns(conn, table_name: str) -> List[str]:
+    """
+    Fetch the column names of a given table in the SQLite database.
+
+    Parameters:
+    - conn (sqlite3.Connection): SQLite database connection object.
+    - table_name (str): Name of the table to fetch columns for.
+
+    Returns:
+    - List[str]: List of column names for the given table.
+
+    Raises:
+    - sqlite3.Error: If there's an error in querying the SQLite database.
+    """
     try:
         cursor = conn.cursor()
         cursor.execute(f"PRAGMA table_info({table_name})")
@@ -29,6 +58,22 @@ def fetch_sqlite_columns(conn, table_name: str) -> List[str]:
 def fetch_from_sqlite(
     conn, table_name: str, columns: List[str], offset: int, batch_size: int
 ) -> List[tuple]:
+    """
+    Fetch a batch of rows from a table in the SQLite database based on the provided offset and batch size.
+
+    Parameters:
+    - conn (sqlite3.Connection): SQLite database connection object.
+    - table_name (str): Name of the table to fetch rows from.
+    - columns (List[str]): List of column names to fetch.
+    - offset (int): Starting point for fetching rows.
+    - batch_size (int): Number of rows to fetch.
+
+    Returns:
+    - List[tuple]: List of rows fetched from the table. Each row is represented as a tuple.
+
+    Raises:
+    - sqlite3.Error: If there's an error in querying the SQLite database.
+    """
     try:
         cursor = conn.cursor()
         if EXCLUDED_COLUMN in columns:

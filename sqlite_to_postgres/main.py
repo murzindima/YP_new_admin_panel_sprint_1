@@ -11,6 +11,30 @@ load_dotenv()
 
 
 def main():
+    """
+    Main migration function that moves data from an SQLite database to a PostgreSQL database.
+
+    This function:
+    1. Reads required environment variables.
+    2. Establishes connections to both SQLite and PostgreSQL databases.
+    3. Loops over the pre-defined tables to migrate them in batches.
+
+    Environment Variables:
+    - SQLITE_DB_PATH: Path to the SQLite database.
+    - POSTGRES_HOST: Hostname of the PostgreSQL server.
+    - POSTGRES_DBNAME: Name of the PostgreSQL database.
+    - POSTGRES_USER: PostgreSQL user.
+    - POSTGRES_PASSWORD: Password for the PostgreSQL user.
+    - BATCH_SIZE: Number of records to migrate in each batch.
+
+    Raises:
+    - ValueError: If any of the required environment variables are missing or invalid.
+
+    Notes:
+    The actual data migration is handled by the `migrate_table` function. If a record
+    with the same ID already exists in the PostgreSQL table, the insertion will be
+    skipped for that record.
+    """
     db_path = os.getenv("SQLITE_DB_PATH")
     if not db_path:
         raise ValueError("SQLITE_DB_PATH environment variable not set")
