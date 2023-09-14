@@ -1,3 +1,4 @@
+import logging
 import os
 
 from dotenv import load_dotenv
@@ -35,6 +36,7 @@ def main():
     with the same ID already exists in the PostgreSQL table, the insertion will be
     skipped for that record.
     """
+
     db_path = os.getenv("SQLITE_DB_PATH")
     if not db_path:
         raise ValueError("SQLITE_DB_PATH environment variable not set")
@@ -57,6 +59,12 @@ def main():
             )
     else:
         raise ValueError("BATCH_SIZE environment variable not set")
+
+    log_level = os.getenv("LOG_LEVEL", "INFO")
+    logging.basicConfig(
+        level=log_level,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    )
 
     with sqlite_conn_context(db_path) as sqlite_conn, postgres_conn_context(
         host, dbname, user, password

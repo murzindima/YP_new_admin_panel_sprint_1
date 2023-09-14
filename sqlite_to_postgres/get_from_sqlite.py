@@ -1,8 +1,10 @@
+import logging
 import sqlite3
 from contextlib import contextmanager
 from typing import List
 
 EXCLUDED_COLUMN = "file_path"
+logger = logging.getLogger(__name__)
 
 
 @contextmanager
@@ -51,7 +53,7 @@ def fetch_sqlite_columns(conn, table_name: str) -> List[str]:
         columns = [col[1] for col in cursor.fetchall()]
         return columns
     except sqlite3.Error as e:
-        print(f"SQLite error occurred while fetching columns: {e}")
+        logger.exception(f"SQLite error occurred while fetching columns: {e}")
         return []
 
 
@@ -83,5 +85,5 @@ def fetch_from_sqlite(
         )
         return cursor.fetchall()
     except sqlite3.Error as e:
-        print(f"SQLite error occurred while fetching data: {e}")
+        logger.exception(f"SQLite error occurred while fetching data: {e}")
         return []
