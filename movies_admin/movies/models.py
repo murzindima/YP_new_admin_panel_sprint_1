@@ -101,6 +101,12 @@ class Person(UUIDMixin, TimeStampedMixin):
         verbose_name_plural = "Персоны"
 
 
+class PersonFilmworkRole(models.TextChoices):
+    ACTOR = "actor", _("actor")
+    WRITER = "writer", _("writer")
+    DIRECTOR = "director", _("director")
+
+
 class PersonFilmwork(UUIDMixin):
     film_work = models.ForeignKey(
         "Filmwork", on_delete=models.CASCADE, verbose_name=_("film_work")
@@ -108,7 +114,12 @@ class PersonFilmwork(UUIDMixin):
     person = models.ForeignKey(
         "Person", on_delete=models.CASCADE, verbose_name=_("person")
     )
-    role = models.TextField(_("role"), null=True)
+    role = models.CharField(
+        _("role"),
+        choices=PersonFilmworkRole.choices,
+        default=PersonFilmworkRole.ACTOR,
+        max_length=8,
+    )
     created_at = models.DateTimeField(_("created"), auto_now_add=True)
 
     class Meta:
